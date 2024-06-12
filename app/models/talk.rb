@@ -2,24 +2,25 @@
 #
 # Table name: talks
 #
-#  id                   :integer          not null, primary key
-#  title                :string
-#  speaker_name         :string
-#  speaker_email        :string
-#  level                :string
+#  id                   :bigint           not null, primary key
 #  duration             :string
-#  created_at           :datetime
-#  updated_at           :datetime
 #  happened_at          :date
-#  slides               :string
-#  video_url            :string
-#  speaker_twitter      :string
+#  level                :string
 #  preferred_month_talk :string
-#  time_position        :datetime
 #  priority             :string
+#  slides               :string
+#  speaker_email        :string
+#  speaker_name         :string
+#  speaker_twitter      :string
+#  time_position        :datetime
+#  title                :string
+#  video_url            :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
 #
 # Indexes
 #
+#  index_talks_on_created_at   (created_at)
 #  index_talks_on_happened_at  (happened_at)
 #
 
@@ -52,7 +53,7 @@ class Talk < ApplicationRecord
 
   def self.months_iterator(range)
     range.map { |m| Date::MONTHNAMES[((m - 1) % 12) + 1].downcase }.inject({}) { |hash, month|
-      path_to_months = 'activerecord.attributes.talk.proposed_months'
+      path_to_months = "activerecord.attributes.talk.proposed_months"
       hash[month] = I18n.translate("#{path_to_months}.#{month}")
       hash
     }
@@ -65,10 +66,14 @@ class Talk < ApplicationRecord
     months_iterator(this_month..this_month + 3)
   end
 
+  def self.next_meetup_date
+    Date.today.first_tuesday_of_the_month < Date.today ? Date.today.next_month.first_tuesday_of_the_month : Date.today.first_tuesday_of_the_month
+  end
+
   ALL_MONTHS = months_iterator(1..12)
-  
+
   enumerize :priority,
-    in: [:low, :normal, :high], default: :normal
+    in: [ :low, :normal, :high ], default: :normal
 
   enumerize :preferred_month_talk,
     in: ALL_MONTHS.keys.map(&:to_sym)
@@ -78,19 +83,19 @@ class Talk < ApplicationRecord
 
   scope :happened,
     -> {
-      where('happened_at < ?', Date.today)
+      where("happened_at < ?", Date.today)
         .order(happened_at: :desc, duration: :asc, created_at: :desc)
     }
 
   scope :lineup,
     -> {
-      where('happened_at BETWEEN ? AND ?', Date.today, 2.weeks.from_now)
+      where("happened_at BETWEEN ? AND ?", Date.today, 2.weeks.from_now)
         .order(duration: :asc, created_at: :desc)
     }
 
   scope :proposed,
     -> {
-      where('happened_at IS NULL OR happened_at > ?', 2.weeks.from_now)
+      where("happened_at IS NULL OR happened_at > ?", 2.weeks.from_now)
         .order(duration: :asc, created_at: :desc)
     }
 
@@ -99,27 +104,28 @@ class Talk < ApplicationRecord
   end
 
   def emoji
-    duration.long? ? '💬' : '⚡'
+    duration.long? ? "💬" : "⚡"
   end
 
   def title_with_emoji
     "#{emoji} #{title}"
   end
 
-  def send_slack_notification!
-    return if ENV['SLACK_WEBHOOK_URL'].blank?
-
-    conn = Faraday.new(headers: {'Content-Type' => 'application/json'}) do |conn|
-      conn.options.timeout = 5
-    end
-    conn.post(ENV['SLACK_WEBHOOK_URL'], {text: <<~MKDWN}.to_json)
+  def to_slack_message
+    <<~MKDWN
       *Nouveau talk* : _#{title}_ par #{speaker_name}
-      
+
       - #{duration_text}
       - #{level_text}
       - #{preferred_month_talk_text}
     MKDWN
-  rescue => e
-    Rails.logger.error "Couldn't send slack notification because of error: #{e.class} #{e.message}"
+  end
+
+  def send_slack_notification!
+    SlackNotificationJob.perform_later(message: to_slack_message, channel: "orga")
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    []
   end
 end

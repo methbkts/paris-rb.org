@@ -15,7 +15,7 @@ sponsors.first(2).each do |sponsor_attributes|
 
   # use Clearbit api to get the logo
 
-  image = URI.open("https://logo.clearbit.com/#{sponsor.clearbit_logo_url}")
+  image = URI.open(sponsor.clearbit_logo_url)
   sponsor.logo.attach(io: image, filename: "#{sponsor.name}")
   sponsor.save!
 end
@@ -62,7 +62,7 @@ puts "create videos"
 
 Video.all.destroy_all
 
-videos = YAML.load(Rails.root.join("test/fixtures/videos.yml").read, permitted_classes: [Date]).values
+videos = YAML.load(Rails.root.join("test/fixtures/videos.yml").read, permitted_classes: [ Date ]).values
 
 videos.each do |video|
   Video.find_or_create_by!(title: video['title']) do |v|
@@ -76,7 +76,7 @@ puts "created #{Video.count} videos"
 puts "Creating talks"
 
 Talk.all.destroy_all
-talks = YAML.load(Rails.root.join("test/fixtures/talks.yml").read, permitted_classes: [Date]).values
+talks = YAML.load(Rails.root.join("test/fixtures/talks.yml").read, permitted_classes: [ Date ]).values
 
 talks.each do |talk|
   Talk.find_or_create_by!(title: talk['title']) do |t|
@@ -90,5 +90,3 @@ Talk.last(3).each do |talk|
 end
 
 puts "created #{Talk.count} talks"
-
-

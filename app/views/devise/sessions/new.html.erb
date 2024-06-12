@@ -1,0 +1,33 @@
+<section class="container pt-12 pb-20">
+  <h1 class="text-center mb-8 text-primary"><%= t('.title') %></h1>
+
+  <div class="flex justify-center">
+    <div class="w-full max-w-md">
+      <%= form_for resource, as: resource_name, url: session_path(resource_name), html: { class: 'space-y-6' } do |f| %>
+
+        <div class="form-control">
+          <%= f.label :email, class: 'label' %>
+          <%= f.text_field :email, autofocus: true, required: false, class: 'input input-bordered w-full' %>
+        </div>
+
+        <div class="form-control">
+          <%= f.label :password, class: 'label' %>
+          <%= f.password_field :password, required: false, class: 'input input-bordered w-full' %>
+        </div>
+
+        <div class="form-control">
+          <%= f.label :remember_me %>
+          <%= f.check_box :remember_me, class: 'toggle toggle-neutral' %>
+        </div>
+
+        <div class="flex justify-end">
+          <%= f.submit t('.sign_in'), class: 'btn btn-accent' %>
+        </div>
+
+        <div>
+          <%= render 'devise/shared/links' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+<div class="reveal">
+  <div class="fixed z-50 w-full p-4 top-0 left-0 flex items-center justify-between">
+    <%= link_to root_path, class: "" do %>
+      <%= image_tag 'parisrb-logo-horizontal.png', class: "h-8 md:h-12", alt: "Paris.rb Logo" %>
+    <% end %>
+    <div class="text-xl"><%= l(Date.today, format: :long) %></div>
+  </div>
+  <div class="slides">
+    <%= render 'lineups/welcome' %>
+    <%= render 'lineups/newcomers' %>
+    <%= render 'lineups/talks' %>
+    <%= render 'lineups/sponsors' %>
+    <%= render 'lineups/speakers' %>
+    <%= render 'lineups/social_media' %>
+  </div>
+</div>

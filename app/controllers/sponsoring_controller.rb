@@ -1,3 +1,0 @@
-class SponsoringController < ApplicationController
-  
-end

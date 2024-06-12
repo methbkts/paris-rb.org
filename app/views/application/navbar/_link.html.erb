@@ -1,0 +1,9 @@
+<% active = current_page?(path) %>
+<li class="flex flex-col gap-1">
+  <div><%= link_to text, path, class: "btn btn-ghost" %></div>
+  <% if active %>
+    <div class="w-full border border-primary rounded" style="view-transition-name: navbar-link"></div>
+  <% else %>
+    <div class="w-full border border-transparent"></div>
+  <% end %>
+</li>

@@ -1,0 +1,20 @@
+<% title t('.title') %>
+<% description t('.description') %>
+
+<div class="container pt-12 pb-20">
+  <h1 class="text-center mb-12 text-primary"><%= t('.title') %></h1>
+
+  <div class="my-8">
+    <%= render 'search_form' %>
+  </div>
+
+  <%= turbo_frame_tag "videos", data: {turbo_action: "advance"} do %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <%= render partial: "videos/card", collection: @videos, as: :video %>
+    </div>
+
+    <div class="my-6">
+      <%= render "components/pagination", items: @videos %>
+    </div>
+  <% end %>
+</div>

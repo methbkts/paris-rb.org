@@ -2,13 +2,13 @@
 #
 # Table name: tweets
 #
-#  id             :integer          not null, primary key
-#  text           :string
+#  id             :bigint           not null, primary key
 #  author         :string
-#  twitter_handle :string
 #  cool_projects  :string
-#  created_at     :datetime
-#  updated_at     :datetime
+#  text           :string
+#  twitter_handle :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 
 class Tweet < ApplicationRecord

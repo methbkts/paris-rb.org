@@ -1,0 +1,18 @@
+---
+EnableDefaultLinters: true
+glob: "**/*.{html}{+*,}.erb"
+exclude:
+  - vendor/bundle/**/*
+  - node_modules/**/*
+  - tmp/**/*
+  - log/**/*
+  - db/**/*
+
+inherit_gem:
+  erblint-github:
+    - config/accessibility.yml
+
+EnableDefaultLinters: true
+linters:
+  ErbSafety:
+    enabled: true

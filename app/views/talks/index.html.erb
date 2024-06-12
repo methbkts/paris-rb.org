@@ -1,0 +1,29 @@
+<div class="container pt-12 pb-20">
+  <h1 class="text-center mb-8 text-primary"><%= t('.lineup') %></h1>
+  <div class="mb-8"><%= t(".description_html") %></div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th><%= Talk.human_attribute_name(:title) %></th>
+        <th><%= Talk.human_attribute_name(:speaker_name) %></th>
+        <th><%= Talk.human_attribute_name(:speaker_twitter) %></th>
+        <th><%= Talk.human_attribute_name(:level) %></th>
+        <th><%= Talk.human_attribute_name(:duration) %></th>
+        <th><%= Talk.human_attribute_name(:preferred_month_talk) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @lineup_talks.each do |talk| %>
+        <tr>
+          <td><%= talk.title %></td>
+          <td><%= talk.speaker_name %></td>
+          <td><%= talk.speaker_twitter %></td>
+          <td><%= talk.level_text %></td>
+          <td><%= talk.duration_text %></td>
+          <td><%= talk.preferred_month_talk %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
